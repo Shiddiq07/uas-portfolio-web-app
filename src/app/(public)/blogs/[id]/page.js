@@ -15,21 +15,25 @@ export default function Blogsbyid(){
     const [modalTitle, setModalTitle] = useState("")
     const [modalMessage, setModalMessage] = useState("")
     const [data, setData] = useState([]);
-    const [komentar, setKomentar] = useState({
+    const [komentar, setDataKomentar] = useState({
         nama:'',
-        isiKomentar:'',
+        email:'',
+        content:'',
+        idBlog:`${params.id}`,
         created_at:new Date()
     });
 
     const clearKomentar = ()=>{
-        setKomentar({
+        setDataKomentar({
             nama:'',
-            isiKomentar:'',
+            email:'',
+            content:'',
+            idBlog:`${params.id}`
         })
     }
 
     const inputHandler= (e) =>{
-        setKomentar({...komentar, [e.target.name]: e.target.value })
+        setDataKomentar({...komentar, [e.target.name]: e.target.value })
     }
 
     const onCancel=()=>{
@@ -53,29 +57,30 @@ export default function Blogsbyid(){
             setLoading(false)
         }
     }
-    const onFetchKomentar=async()=>{
-        try{
-            setLoadingKomentar(true)
-            let res = await fetch(`/api/komentar/${params.id}`)
-            let data = await res.json()
-            setDataKomentar(data.data)
-            setLoadingKomentar(false)
-        }catch(err){
-            console.log('err', err)
-            setDataKomentar([])
-            setLoadingKomentar(false)
-        }
-    }
+    // const onFetchKomentar=async()=>{
+    //     try{
+    //         let res = await fetch(`/api/komentar/${params.id}`)
+    //         let data = await res.json()
+    //         setDataKomentar(data.data)
+    //     }catch(err){
+    //         console.log('err', err)
+    //         setDataKomentar([])
+    //     }
+    // }
 
     useEffect(()=>{
         onFetchBlogs()
-        onFetchKomentar()
+        // onFetchKomentar()
     },[])
 
     if(isLoading) return (<>Loading...</>)
 
 
         async function onSubmitData() {
+            // const body = komentar
+            //      body.content = editorRef.current.getContent();
+                
+            // console.log(body)
             try{
                 if (editorRef.current) {
                     const body = komentar
@@ -119,15 +124,24 @@ export default function Blogsbyid(){
                         type="text" 
                         className="w-full border my-input-text"/>
             </div>
+            <div className="w-full my-2">
+                <label>Email</label>
+                    <input 
+                        name='email'
+                        value={komentar.email}
+                        onChange={inputHandler}
+                        type="text" 
+                        className="w-full border my-input-text"/>
+            </div>
 
          
             <div className="w-full my-2">
                 <label>Komentar</label>
                 <Editor
-                    id='komentar'
-                    apiKey='hz9os6h0p1826jcqknks4q1fm8yl9khctaa7nmexkf0rnx2e'
+                    id='content'
+                    apiKey='m2afkqhuq0nwt7jf6mqbtbkpyxnf2radrrhi6s4kbu4mxdca'
                     onInit={(_evt, editor) => editorRef.current = editor}
-                    initialValue={komentar.komentar}
+                    initialValue={komentar.content}
                     init={{
                     height: 500,
                     menubar: false,

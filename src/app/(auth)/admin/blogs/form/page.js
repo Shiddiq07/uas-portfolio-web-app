@@ -14,9 +14,22 @@ export default function AdminBlogsForm() {
         title:'',
         subTitle:'',
         content:'',
+        kategori:'',
         created_at:new Date()
     });
 
+    const [selectedOption, setSelectedOption] = useState('option1');
+
+    const options = [
+      { value: 'reactjs', label: 'ReactJs' },
+      { value: 'php', label: 'PHP - Programming' },
+      { value: 'vuejs', label: 'VueJs' },
+      { value: 'react', label: 'React Native' }
+    ];
+
+    const handleChangeOption = (event) => {
+        setSelectedOption(event.target.value);
+      };
     const clearData = ()=>{
         setData({
             title:'',
@@ -85,12 +98,27 @@ export default function AdminBlogsForm() {
                         onChange={inputHandler}
                         className="w-full border my-input-text"/>
             </div>
+            <div className="w-full my-2">
+                <label>Category Blogs</label>
+                <select
+                name='kategori'
+      value={data.kategori}
+      onChange={inputHandler}
+      className="w-full border my-input-text"
+    >
+      {options.map((option) => (
+        <option key={option.label} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+            </div>
 
             <div className="w-full my-2">
                 <label>Content</label>
                 <Editor
                     id='content'
-                    apiKey='hz9os6h0p1826jcqknks4q1fm8yl9khctaa7nmexkf0rnx2e'
+                    apiKey='m2afkqhuq0nwt7jf6mqbtbkpyxnf2radrrhi6s4kbu4mxdca'
                     onInit={(_evt, editor) => editorRef.current = editor}
                     initialValue={data.content}
                     init={{
