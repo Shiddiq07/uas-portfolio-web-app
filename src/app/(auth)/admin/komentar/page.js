@@ -4,13 +4,13 @@ import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ConfigDialog from '../../../../components/ConfirmDialog';
 
-export default function AdminBlogs() {
+export default function AdminKomentar() {
   const router = useRouter();
   const [isLoading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
-  const [blogs, setBlogs] = useState([]); // Stores all blogs
+  const [komentar, setKomentar] = useState([]); // Stores all kategori
   const [isOkOnly, setIsOkOnly] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [searchTerm,setSearchTerm]=useState('')
@@ -20,7 +20,7 @@ export default function AdminBlogs() {
  
 
     const onAddNew = ()=>{
-        router.push('/admin/blogs/form')
+        router.push('/admin/komentar/form')
     }
 
     const onConfirmDelete=(id)=>{
@@ -39,7 +39,7 @@ export default function AdminBlogs() {
 
     const onConfirmOk=async ()=>{
         try{
-            const res = await fetch(`/api/blogs/${deleteId}`,{method:'DELETE'});
+            const res = await fetch(`/api/komentar/${deleteId}`,{method:'DELETE'});
             let data = await res.json()
 
             setIsOkOnly(true)
@@ -61,11 +61,14 @@ export default function AdminBlogs() {
     
     const fetchData = async () => {
         try {
-            let res = await fetch("/api/blogs");
-          let data = await res.json();
-          console.log(data)
+          setLoading(true)
+
+            let res = await fetch("/api/komentar")
+          let data = await res.json()
+          console.log(data.data)
           setData(data.data);
           setFilteredData(data.data);
+          setKomentar(data.data)
           setLoading(false);
 
         } catch (err) {
@@ -78,12 +81,12 @@ export default function AdminBlogs() {
       useEffect(() => {
         fetchData();
       }, []); // Re-run fetchData on searchTerm change
-    
+      
     const gotoEditPage=(id)=>{
-        router.push(`/admin/blogs/edit/${id}`)
+        router.push(`/admin/komentar/edit/${id}`)
     }
     const goToDetail=(id)=>{
-router.push(`/admin/blogs/detail/${id}`)
+router.push(`/admin/komentar/detail/${id}`)
     }
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -92,10 +95,10 @@ router.push(`/admin/blogs/detail/${id}`)
         );
         setFilteredData(results);
       };
-  console.log(searchTerm)
+  
     return (
         <>
-        <Card title="List of Blogs" style="mt-5" showAddBtn onAddNew={onAddNew}>
+        <Card title="List of Komentar" style="mt-5" >
         <form
         onSubmit={handleSearchSubmit}
         className="flex items-center space-x-4 max-w-md mb-6"
@@ -114,7 +117,11 @@ router.push(`/admin/blogs/detail/${id}`)
           Submit
         </button>
       </form>
-            <table className="table-auto w-full">
+      {/* {!isLoading &&  komentar.map( (item,key) => <Card className="mt-5" key={key} title={item.nama}>
+                <p key={key}  dangerouslySetInnerHTML={{ __html: item.content }} />
+            </Card> )
+        } */}
+        <table className="table-auto w-full">
                 <thead>
                     <tr>
                         <th className='table-head border-blue-gray-100'>No</th>
@@ -129,8 +136,9 @@ router.push(`/admin/blogs/detail/${id}`)
                         return (
                             <tr key={key} className='border-b border-blue-gray-50 '>
                                 <td className='p-2 text-center'>{key+1}</td>
-                                <td className='p-2 '>{item.title} </td>
-                                <td className='p-2 '>{item.subTitle} </td>
+                                <td className='p-2 '>{item.nama} </td>
+
+                                <td className='p-2 '><p dangerouslySetInnerHTML={{ __html: item.content }} /></td>
                                 <td className='p-2 '>
                                     <div className="inline-flex text-[12px]">
                                         <button

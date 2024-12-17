@@ -16,24 +16,24 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     throw new Error('invalid srequest')
                 }
                 
-                if( body.namaKategori == ""){
-                  throw new Error('nama is required')
-                }
-                if( body.email == ""){
-                    throw new Error('email is required')
-                }
-                if( body.content == ""){
-                    throw new Error('komentar is required')
-                }
+                // if( body.namaKategori == ""){
+                //   throw new Error('nama is required')
+                // }
+                // if( body.email == ""){
+                //     throw new Error('email is required')
+                // }
+                // if( body.content == ""){
+                //     throw new Error('komentar is required')
+                // }
                
-                if( body.idBlog== ""){
-                    throw new Error('komentar is required')
-                }
+                // if( body.idBlog== ""){
+                //     throw new Error('komentar is required')
+                // }
                
 
 
-                let isiDataKomentar = await db.collection("kategori").insertOne(body);
-                res.status(200).json({ kategori: isiDataKomentar, message:'data berhasil di simpan' });
+                let komentar = await db.collection("message").insertOne(body);
+                res.status(200).json({ data: komentar, message:'data berhasil di simpan' });
             }catch(err){
                 res.status(422).json({ message: err.message});
             }
@@ -41,8 +41,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
 
        
         default:
-            const allKomentar = await db.collection("kategori").find({}).toArray();
-            res.json({ kategori: allKomentar });
+            const allKomentar = await db.collection("message").find({}).toArray();
+            res.json({ data: allKomentar });
         break;
     }
 }

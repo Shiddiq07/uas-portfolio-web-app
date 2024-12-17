@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Carousel } from "@material-tailwind/react";
 
 const CardItem = ({ title, subTitle})=>{
     return (
@@ -23,9 +24,12 @@ const CardItem = ({ title, subTitle})=>{
 
 const Bedge= ({ kategori})=>{
     return (
-        <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-        {kategori}
-      </span>
+
+    <div className=" cursor-pointer flex  flex-nowrap  justify-center relative rounded-md bg-zinc-900 w-32  text-white h-12">
+{kategori}
+     
+      </div>
+        
     )
 }
 
@@ -66,6 +70,7 @@ export default function Blogs(){
           let data = await res.json();
           setData(data.data);
           setFilteredData(data.data);
+          setSearchByKategori(data.data)
 
          
           
@@ -94,7 +99,7 @@ export default function Blogs(){
         }
       };
 
-   
+   console.log(searchByKategori)
       useEffect(() => {
         onFetchBlogs();
         onFetchKategori();
@@ -102,24 +107,26 @@ export default function Blogs(){
       const handleSearchSubmit = (e) => {
         e.preventDefault();
         const results = data.filter((item) =>{
-            if (searchByKategori !== "" && searchTerm !== "") {
-             return   item.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                 item.kategori.toLowerCase.includes(searchByKategori.toLowerCase())
-
-            }if (searchByKategori !=="" && searchTerm =="") {
-                return  item.kategori.toLowerCase.includes(searchByKategori.toLowerCase())
-            }
-            else{
-                return   item.title.toLowerCase().includes(searchTerm.toLowerCase())
-            }
+            
+                return  item.title.toLowerCase().includes(searchTerm.toLowerCase())
+            
         }
            
         );
         setFilteredData(results);
       };
 
+      const handleSearchByKategori=(idKategori)=>{
+     
+        const results=data.filter((item)=>{
+            return  item.idKategori.toLowerCase().includes(idKategori.toLowerCase())
+        });
+        setFilteredData(results);
+      }
+
     return (
-        <>
+        < >
+        
             <h2 className="text-center text-[32px] font-bold w-full">Blog</h2>
                 
             <p className="text-center margin-0 mx-auto w-2/3">
@@ -144,21 +151,24 @@ export default function Blogs(){
         </button>
       </form>
       
-      <div className="grid grid-cols-3 gap-4 mt-10">
-      {!isLoading &&  dataKategori.map((item, key)=><div key={key}
-      onClick={(e) => setSearchByKategori(e.target.value)}>
+     <div className='flex flex-wrap'>
+     
+      {!isLoading &&  dataKategori.map((item, key)=><div className="m-px " key={key}
+      onClick={ ()=>handleSearchByKategori(item._id)}>
            
            
-            <Bedge onClick={handleSearchSubmit}
-             className="m-5 p-4 " 
+            <Bedge 
+             className="" 
              kategori={item.namaKategori} 
+             idKategori={item._id} 
              />
 
            
                 </div>
+              
                 )
             }
-                </div>
+              </div>
             <div className="grid grid-cols-3 gap-4 mt-10">
                 { isLoading && <LoadingCard/> }
                 { isLoading && <LoadingCard/> }

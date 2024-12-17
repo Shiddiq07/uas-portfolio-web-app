@@ -10,11 +10,14 @@ import { useParams } from 'next/navigation'
 export default function Blogsbyid(){
     const params = useParams();
     const [isLoading, setLoading] = useState(true)
+    const [loadingKomen, setLoadingKomen] = useState(true)
     const editorRef = useRef(null);
     const [modal, setModal] = useState(false)
     const [modalTitle, setModalTitle] = useState("")
     const [modalMessage, setModalMessage] = useState("")
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [dataKomenById, setDataKomenById] = useState([]);
     const [komentar, setDataKomentar] = useState({
         nama:'',
         email:'',
@@ -22,7 +25,7 @@ export default function Blogsbyid(){
         idBlog:`${params.id}`,
         created_at:new Date()
     });
-
+const idBlog=`${params.id}`
     const clearKomentar = ()=>{
         setDataKomentar({
             nama:'',
@@ -42,38 +45,24 @@ export default function Blogsbyid(){
         setModalMessage('')
         clearKomentar()
     }
-
-
-    const onFetchBlogs=async()=>{
+    const onFetchKomentar=async()=>{
         try{
-            setLoading(true)
-            let res = await fetch(`/api/blogs/${params.id}`)
+            setLoadingKomen(true)
+            let res = await fetch(`/api/komentar/${params.id}`)
             let data = await res.json()
-            setData(data.data)
-            setLoading(false)
+            setDataKomenById(data.data)
+            // const results= data.filter((item)=>{
+            //     return  item.idBlog.toLowerCase().includes(idBlog.toLowerCase())
+            // });
+            // setFilteredData(results);
+            setLoadingKomen(false)
         }catch(err){
             console.log('err', err)
-            setData(null)
-            setLoading(false)
+           setDataKomenById([])
+           setLoadingKomen(false)
         }
     }
-    // const onFetchKomentar=async()=>{
-    //     try{
-    //         let res = await fetch(`/api/komentar/${params.id}`)
-    //         let data = await res.json()
-    //         setDataKomentar(data.data)
-    //     }catch(err){
-    //         console.log('err', err)
-    //         setDataKomentar([])
-    //     }
-    // }
-
-    useEffect(()=>{
-        onFetchBlogs()
-        // onFetchKomentar()
-    },[])
-
-    if(isLoading) return (<>Loading...</>)
+    
 
 
         async function onSubmitData() {
@@ -106,7 +95,34 @@ export default function Blogsbyid(){
               setModalMessage(err.message)
             }
           }
+         
+    const onFetchBlogs=async()=>{
+        try{
+            setLoading(true)
+
+            let res = await fetch(`/api/blogs/${params.id}`)
+            let data = await res.json()
+            setData(data.data)
+            setLoading(false)
     
+            
+        }catch(err){
+            console.log('err', err)
+            setData(null)
+            setLoading(false)
+
+        }
+    }
+    useEffect(()=>{
+        onFetchBlogs()
+         onFetchKomentar()
+    },[])
+ 
+console.log(data)
+    if(isLoading) return (<>Loading...</>)
+    if(loadingKomen) return (<>Memuat Komentar...</>)
+    
+      
     return (
         <>
             <div className='margin-0 mx-auto w-2/3'>
@@ -165,11 +181,63 @@ export default function Blogsbyid(){
                 </span>
             </button></div>
 
-             
+             <div>
 
+             </div>
+  
             </div>
-           
-            
+         
+        </Card>
+        {
+            dataKomenById.map( (komen,idx) => <Card className="mt-5" key={idx} title={komen.nama}>
+                <div  dangerouslySetInnerHTML={{ __html: komen.content }} />
+            </Card> )
+        }
+        
+        <Card>
+        <div> <table className="table-auto w-full">
+                <thead>
+                    <tr>
+                        <th className='table-head border-blue-gray-100'>No</th>
+                        <th className='table-head border-blue-gray-100'>Nama</th>
+                        <th className='table-head border-blue-gray-100'>Komentar</th>
+                        <th className='table-head border-blue-gray-100'>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  
+                {!loadingKomen && dataKomenById.length > 0 && dataKomenById.map((item, key)=>{
+                        return (
+                            <tr key={key} className='border-b border-blue-gray-50 '>
+                                <td className='p-2 text-center'>{key+1}</td>
+                                <td className='p-2 '>{item.nama} </td>
+                                <td className='p-2 '>{item.content} </td>
+                                <td className='p-2 '>
+                                    {/* <div className="inline-flex text-[12px]">
+                                        <button
+                                        onClick={()=>goToDetail(item._id)}
+                                        className=" bg-green-300 hover:bg-green-400 text-gray-800 py-2 px-4 rounded-l">
+                                            Detail
+                                        </button>
+                                        <button 
+                                            onClick={()=>gotoEditPage(item._id)}
+                                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4">
+                                            Edit
+                                        </button>
+                                        <button 
+                                            onClick={()=>onConfirmDelete(item._id)}
+                                            className="bg-red-300 hover:bg-red-400 text-gray-800 py-2 px-4 rounded-r">
+                                            Delete
+                                        </button>
+                                    </div> */}
+                                </td>
+                            </tr>
+                        )
+                    })
+                    }
+                </tbody>
+            </table>
+            </div>
         </Card>
         <ConfigDialog  
             onOkOny={()=>onCancel()} 
