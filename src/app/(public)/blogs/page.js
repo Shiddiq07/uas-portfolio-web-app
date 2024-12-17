@@ -21,6 +21,14 @@ const CardItem = ({ title, subTitle})=>{
     )
 }
 
+const Bedge= ({ kategori})=>{
+    return (
+        <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+        {kategori}
+      </span>
+    )
+}
+
 const LoadingCard=()=>{ 
     return (
         <div className="w-[310px] h-[474px] border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
@@ -45,17 +53,22 @@ const LoadingCard=()=>{
 export default function Blogs(){
     const router = useRouter();
     const [data, setData] = useState([])
+    const [dataKategori, setDataKategori] = useState([])
     const [isLoading, setLoading] = useState(true)
     const [filteredData,setFilteredData]=useState([])
     const [searchTerm,setSearchTerm]=useState('')
+    const [searchByKategori,setSearchByKategori]=useState('')
 
-
+    // console.log(dataKategori)
     const onFetchBlogs = async () => {
         try {
             let res = await fetch("/api/blogs");
           let data = await res.json();
           setData(data.data);
           setFilteredData(data.data);
+
+         
+          
           setLoading(false);
 
         } catch (err) {
@@ -65,13 +78,42 @@ export default function Blogs(){
 
         }
       };
+    const onFetchKategori = async () => {
+        try {
+            let res = await fetch("/api/kategori");
+          let data = await res.json();
+        
+          setDataKategori(data.data);
+          setLoading(false);
+
+        } catch (err) {
+            console.log("err", err);
+            setData([]);
+            setLoading(false);
+
+        }
+      };
+
+   
       useEffect(() => {
         onFetchBlogs();
+        onFetchKategori();
       }, []);
       const handleSearchSubmit = (e) => {
         e.preventDefault();
-        const results = data.filter((item) =>
-          item.title.toLowerCase().includes(searchTerm.toLowerCase())
+        const results = data.filter((item) =>{
+            if (searchByKategori !== "" && searchTerm !== "") {
+             return   item.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                 item.kategori.toLowerCase.includes(searchByKategori.toLowerCase())
+
+            }if (searchByKategori !=="" && searchTerm =="") {
+                return  item.kategori.toLowerCase.includes(searchByKategori.toLowerCase())
+            }
+            else{
+                return   item.title.toLowerCase().includes(searchTerm.toLowerCase())
+            }
+        }
+           
         );
         setFilteredData(results);
       };
@@ -101,6 +143,22 @@ export default function Blogs(){
           Submit
         </button>
       </form>
+      
+      <div className="grid grid-cols-3 gap-4 mt-10">
+      {!isLoading &&  dataKategori.map((item, key)=><div key={key}
+      onClick={(e) => setSearchByKategori(e.target.value)}>
+           
+           
+            <Bedge onClick={handleSearchSubmit}
+             className="m-5 p-4 " 
+             kategori={item.namaKategori} 
+             />
+
+           
+                </div>
+                )
+            }
+                </div>
             <div className="grid grid-cols-3 gap-4 mt-10">
                 { isLoading && <LoadingCard/> }
                 { isLoading && <LoadingCard/> }
@@ -120,6 +178,7 @@ export default function Blogs(){
                 
                
             </div>
+         
         </>
     );
 }

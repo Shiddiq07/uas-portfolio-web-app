@@ -25,8 +25,7 @@ function SearchBar() {
 
       
 
-    // Ganti 'YOUR_API_ENDPOINT' dengan endpoint API Anda
-  
+    
    
 
   };

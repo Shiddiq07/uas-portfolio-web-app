@@ -16,7 +16,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     throw new Error('invalid srequest')
                 }
                 
-                if( body.nama == ""){
+                if( body.namaKategori == ""){
                   throw new Error('nama is required')
                 }
                 if( body.email == ""){
@@ -32,8 +32,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                
 
 
-                let isiDataKomentar = await db.collection("komentar").insertOne(body);
-                res.status(200).json({ komentar: isiDataKomentar, message:'data berhasil di simpan' });
+                let isiDataKomentar = await db.collection("kategori").insertOne(body);
+                res.status(200).json({ kategori: isiDataKomentar, message:'data berhasil di simpan' });
             }catch(err){
                 res.status(422).json({ message: err.message});
             }
@@ -41,8 +41,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
 
        
         default:
-            const allKomentar = await db.collection("komentar").find({}).toArray();
-            res.json({ komentar: allKomentar });
+            const allKomentar = await db.collection("kategori").find({}).toArray();
+            res.json({ kategori: allKomentar });
         break;
     }
 }

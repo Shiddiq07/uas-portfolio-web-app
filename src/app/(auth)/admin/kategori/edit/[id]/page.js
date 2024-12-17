@@ -1,72 +1,61 @@
-'use client'
-import Card from '../../../../../components/card';
-import ConfigDialog from '../../../../../components/ConfirmDialog'
-import { useState } from 'react'
-import { useRef,useEffect } from 'react';
+"use client"
+import { useRouter, useParams } from 'next/navigation';
+import Card from '../../../../../../components/card';
+import { useEffect, useState, useRef } from 'react';
+import ConfigDialog from '../../../../../../components/ConfirmDialog'
 import { Editor } from '@tinymce/tinymce-react';
 
-export default function AdminBlogsForm() {
+export default function EditKategori() {
+    const router= useRouter()
     const editorRef = useRef(null);
+    const params = useParams()
     const [modal, setModal] = useState(false)
     const [modalTitle, setModalTitle] = useState("")
     const [modalMessage, setModalMessage] = useState("")
-    const [dataKategori, setDataKategori] = useState([])
-
+    const [isOkOnly, setIsOkOnly] = useState(true)
     const [data, setData] = useState({
-        idKategori:'',
         title:'',
         subTitle:'',
         content:'',
-       
-        created_at:new Date()
+        _id:'',
+        updated_at:new Date()
     });
-    const onFetchKategori = async () => {
-        try {
-            let res = await fetch("/api/kategori");
-          let data = await res.json();
-          setDataKategori(data.data);
-        
-        } catch (err) {
-            console.log("err", err);
-            setData([]);
 
+
+    const fetDataById = async ()=>{
+        try{
+            const res = await fetch(`/api/bategori/${params.id}`);
+            let responseData = await res.json()
+            setData(responseData.data)
+
+        }catch(err){
+            console.error("ERR", err.message)
+            setModal(true)
+            setModalTitle('Err')
+            setModalMessage(err.message)
         }
-      };
-       useEffect(() => {
-              onFetchKategori();
-            }, []);
-    const [selectedOption, setSelectedOption] = useState('option1');
+    }
 
-  
-    
-    const clearData = ()=>{
-        setData({
-            title:'',
-            subTitle:'',
-            content:'',
-        })
+    const onCancel=()=>{
+        setModal(false)
+    }
+
+    const onOkOnly=()=>{
+        setModal(false)
+        router.push('/admin/kategori')
     }
 
     const inputHandler= (e) =>{
         setData({...data, [e.target.name]: e.target.value })
     }
 
-    const onCancel=()=>{
-        setModal(false)
-        setModalTitle('')
-        setModalMessage('')
-        clearData()
-    }
-
-    async function onSubmitData() {
+    const onSubmitData=async ()=>{
         try{
-            
             if (editorRef.current) {
                 const body = data
-                body.content = editorRef.current.getContent();
 
-                let res = await fetch('/api/blogs', {
-                    method:'POST',
+                let res = await fetch(`/api/kategori/${data._id}`, {
+                    method:'PUT',
                     body: JSON.stringify(body),
                 })
 
@@ -84,12 +73,15 @@ export default function AdminBlogsForm() {
           setModalTitle('Err')
           setModalMessage(err.message)
         }
-      }
+    }
+
+    useEffect(()=>{
+        fetDataById()
+    },[])
 
     return (
-    <>
-
-        <Card title="Blogs Form">
+      <>
+        <Card title="Kategori Edit Form">
             <div className="w-full my-2">
                 <label>Title</label>
                     <input 
@@ -108,32 +100,10 @@ export default function AdminBlogsForm() {
                         onChange={inputHandler}
                         className="w-full border my-input-text"/>
             </div>
-            <div className="w-full my-2">
-                <label>Category Blogs</label>
-                <select
-                name='idKategori'
-      value={data.idKategori}
-      onChange={inputHandler}
-      className="w-full border my-input-text"
-    >
-        <option value="">Pilih Kategori
-        </option>
-        {dataKategori.map((option) => {
-    return (
-        <option key={option._id} value={option._id}>
-            {option.namaKategori}
-        </option>
-    );
-})}
 
-    </select>
-            </div>
-
-            <div className="w-full my-2">
-                <label>Content</label>
-                <Editor
+            <Editor
                     id='content'
-                    apiKey='m2afkqhuq0nwt7jf6mqbtbkpyxnf2radrrhi6s4kbu4mxdca'
+                    apiKey='hz9os6h0p1826jcqknks4q1fm8yl9khctaa7nmexkf0rnx2e'
                     onInit={(_evt, editor) => editorRef.current = editor}
                     initialValue={data.content}
                     init={{
@@ -151,23 +121,23 @@ export default function AdminBlogsForm() {
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
                 />
-            </div>
 
             <button  className="btn-primary" onClick={onSubmitData}>
                 <span className="relative text-sm font-semibold text-white">
                     Save Data
                 </span>
-            </button>
+            </button> 
         </Card>
 
         <ConfigDialog  
-            onOkOny={()=>onCancel()} 
+            onOkOny={()=>onOkOnly()} 
             showDialog={modal}
             title={modalTitle}
             message={modalMessage}
             onCancel={()=>onCancel()} 
-            onOk={()=>onCancel()} 
-            isOkOnly={true} />
-    </>
-    )
+            onOk={()=>onConfirmOk()} 
+            isOkOnly={isOkOnly} />
+      </>
+    );
 }
+  

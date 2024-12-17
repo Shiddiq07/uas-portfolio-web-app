@@ -15,23 +15,14 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     throw new Error('invalid request')
                 }
                 
-                if( body.title == ""){
+                if( body.namaKategori == ""){
                     throw new Error('title is required')
                 }
 
-                if( body.subTitle == ""){
-                    throw new Error('subTitle is required')
-                }
-
-                if( body.content == ""){
-                    throw new Error('content is required')
-                }
-                if( body.idKategori == ""){
-                    throw new Error('created kosong ')
-                }
+              
                 
-                let blogs = await db.collection("blogs").insertOne(body);
-                res.status(200).json({ data: blogs, message:'data berhasil di simpan' });
+                let kategori = await db.collection("kategori").insertOne(body);
+                res.status(200).json({ data: kategori, message:'data berhasil di simpan' });
 
             }catch(err){
                 res.status(422).json({ message: err.message});
@@ -40,8 +31,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             
         default:
 
-        const blogsData = await db.collection("blogs").find({}).toArray();
-        res.json({ data: blogsData });
+        const kategoriData = await db.collection("kategori").find({}).toArray();
+        res.json({ data: kategoriData });
         break;
     }
 }
