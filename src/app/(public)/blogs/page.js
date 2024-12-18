@@ -63,14 +63,14 @@ export default function Blogs(){
     const [searchTerm,setSearchTerm]=useState('')
     const [searchByKategori,setSearchByKategori]=useState('')
 
-    // console.log(dataKategori)
+ 
     const onFetchBlogs = async () => {
         try {
             let res = await fetch("/api/blogs");
           let data = await res.json();
           setData(data.data);
           setFilteredData(data.data);
-          setSearchByKategori(data.data)
+         
 
          
           
@@ -98,12 +98,7 @@ export default function Blogs(){
 
         }
       };
-
-//    console.log(searchByKategori)
-      useEffect(() => {
-        onFetchBlogs();
-        onFetchKategori();
-      }, []);
+  
       const handleSearchSubmit = (e) => {
         e.preventDefault();
         const results = data.filter((item) =>{
@@ -115,15 +110,22 @@ export default function Blogs(){
         );
         setFilteredData(results);
       };
+    //   const handleFilter = (isi)=>{
+    //     setSearchByKategori(isi)
+    // }
 
-      const handleSearchByKategori=(idKategori)=>{
+      const handleSearchByKategori=(isiKategori)=>{
      
-        const results=data.filter((item)=>{
-            return  item.idKategori.toLowerCase().includes(idKategori.toLowerCase())
+     
+        const results= data.filter((item)=>{
+            return  item.idKategori.toLowerCase().includes(isiKategori.toLowerCase())
         });
         setFilteredData(results);
       }
-
+      useEffect(() => {
+        onFetchBlogs();
+        onFetchKategori();
+      }, []);
     return (
         < >
         
