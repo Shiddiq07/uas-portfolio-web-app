@@ -99,7 +99,7 @@ export default function Blogs(){
         }
       };
 
-   console.log(searchByKategori)
+//    console.log(searchByKategori)
       useEffect(() => {
         onFetchBlogs();
         onFetchKategori();

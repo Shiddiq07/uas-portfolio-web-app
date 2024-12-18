@@ -86,7 +86,7 @@ export default function AdminKomentar() {
         router.push(`/admin/komentar/edit/${id}`)
     }
     const goToDetail=(id)=>{
-router.push(`/admin/komentar/detail/${id}`)
+router.push(`/admin/komentar/edit/${id}`)
     }
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -99,7 +99,7 @@ router.push(`/admin/komentar/detail/${id}`)
     return (
         <>
         <Card title="List of Komentar" style="mt-5" >
-        <form
+        {/* <form
         onSubmit={handleSearchSubmit}
         className="flex items-center space-x-4 max-w-md mb-6"
       >
@@ -116,7 +116,7 @@ router.push(`/admin/komentar/detail/${id}`)
         >
           Submit
         </button>
-      </form>
+      </form> */}
       {/* {!isLoading &&  komentar.map( (item,key) => <Card className="mt-5" key={key} title={item.nama}>
                 <p key={key}  dangerouslySetInnerHTML={{ __html: item.content }} />
             </Card> )
@@ -125,8 +125,8 @@ router.push(`/admin/komentar/detail/${id}`)
                 <thead>
                     <tr>
                         <th className='table-head border-blue-gray-100'>No</th>
-                        <th className='table-head border-blue-gray-100'>Title</th>
-                        <th className='table-head border-blue-gray-100'>Sub Title</th>
+                        <th className='table-head border-blue-gray-100'>Nama</th>
+                        <th className='table-head border-blue-gray-100'>Komentar</th>
                         <th className='table-head border-blue-gray-100'>Action</th>
                     </tr>
                 </thead>
@@ -146,11 +146,11 @@ router.push(`/admin/komentar/detail/${id}`)
                                         className=" bg-green-300 hover:bg-green-400 text-gray-800 py-2 px-4 rounded-l">
                                             Detail
                                         </button>
-                                        <button 
+                                        {/* <button 
                                             onClick={()=>gotoEditPage(item._id)}
                                             className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4">
                                             Edit
-                                        </button>
+                                        </button> */}
                                         <button 
                                             onClick={()=>onConfirmDelete(item._id)}
                                             className="bg-red-300 hover:bg-red-400 text-gray-800 py-2 px-4 rounded-r">

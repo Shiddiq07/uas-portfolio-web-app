@@ -95,7 +95,7 @@ router.push(`/admin/kategori/detail/${id}`)
     return (
         <>
         <Card title="List of Kategori" style="mt-5" showAddBtn onAddNew={onAddNew}>
-        <form
+        {/* <form
         onSubmit={handleSearchSubmit}
         className="flex items-center space-x-4 max-w-md mb-6"
       >
@@ -112,7 +112,7 @@ router.push(`/admin/kategori/detail/${id}`)
         >
           Submit
         </button>
-      </form>
+      </form> */}
             <table className="table-auto w-full">
                 <thead>
                     <tr>
@@ -128,20 +128,20 @@ router.push(`/admin/kategori/detail/${id}`)
                             <tr key={key} className='border-b border-blue-gray-50 '>
                                 <td className='p-2 text-center'>{key+1}</td>
                                 <td className='p-2 '>{item.namaKategori} </td>
-                                <td className='p-2 '>
+                                 <td className='p-2 '>
                                     <div className="inline-flex text-[12px]">
-                                        <button 
+                                        {/* <button 
                                             onClick={()=>gotoEditPage(item._id)}
                                             className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4">
                                             Edit
-                                        </button>
+                                        </button> */}
                                         <button 
                                             onClick={()=>onConfirmDelete(item._id)}
                                             className="bg-red-300 hover:bg-red-400 text-gray-800 py-2 px-4 rounded-r">
                                             Delete
                                         </button>
                                     </div>
-                                </td>
+                                </td> 
                             </tr>
                         )
                     })

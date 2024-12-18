@@ -17,14 +17,17 @@ export default function Blogsbyid(){
     const [modalMessage, setModalMessage] = useState("")
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState([]);
     const [dataKomenById, setDataKomenById] = useState([]);
     const [komentar, setDataKomentar] = useState({
         nama:'',
         email:'',
         content:'',
+        balasan:'',
         idBlog:`${params.id}`,
         created_at:new Date()
     });
+    console.log()
 const idBlog=`${params.id}`
     const clearKomentar = ()=>{
         setDataKomentar({
@@ -37,24 +40,30 @@ const idBlog=`${params.id}`
 
     const inputHandler= (e) =>{
         setDataKomentar({...komentar, [e.target.name]: e.target.value })
-    }
+    }  
+    const handleRefresh = () => {
+        window.location.reload();
+      };
+
 
     const onCancel=()=>{
         setModal(false)
         setModalTitle('')
         setModalMessage('')
         clearKomentar()
+        handleRefresh()
+
     }
+   
+
     const onFetchKomentar=async()=>{
         try{
             setLoadingKomen(true)
             let res = await fetch(`/api/komentar/${params.id}`)
             let data = await res.json()
+            console.log(data.data)
             setDataKomenById(data.data)
-            // const results= data.filter((item)=>{
-            //     return  item.idBlog.toLowerCase().includes(idBlog.toLowerCase())
-            // });
-            // setFilteredData(results);
+           
             setLoadingKomen(false)
         }catch(err){
             console.log('err', err)
@@ -62,9 +71,16 @@ const idBlog=`${params.id}`
            setLoadingKomen(false)
         }
     }
-    
-
-
+    const handleKomentar = () => {
+        const results = dataKomenById.filter((item) =>{
+            
+                return  item.idBlog.toLowerCase().includes(idBlog.toLowerCase())
+            
+        }
+           
+        );
+        setFilteredData(results);
+      };
         async function onSubmitData() {
             // const body = komentar
             //      body.content = editorRef.current.getContent();
@@ -81,12 +97,13 @@ const idBlog=`${params.id}`
                     })
     
                     let resKomentar = await res.json()
-                    if(!resKomentar.komentar){
+                    if(!resKomentar.data){
                     throw Error(resKomentar.message)
                     }
                     setModal(true)
                     setModalTitle('Info')
                     setModalMessage(resKomentar.message)
+                    handleRefresh()
                 }
             }catch(err){
               console.error("ERR", err.message)
@@ -116,9 +133,10 @@ const idBlog=`${params.id}`
     useEffect(()=>{
         onFetchBlogs()
          onFetchKomentar()
+         handleKomentar()
     },[])
  
-console.log(data)
+console.log(dataKomenById)
     if(isLoading) return (<>Loading...</>)
     if(loadingKomen) return (<>Memuat Komentar...</>)
     
@@ -188,12 +206,7 @@ console.log(data)
             </div>
          
         </Card>
-        {
-            dataKomenById.map( (komen,idx) => <Card className="mt-5" key={idx} title={komen.nama}>
-                <div  dangerouslySetInnerHTML={{ __html: komen.content }} />
-            </Card> )
-        }
-        
+     
         <Card>
         <div> <table className="table-auto w-full">
                 <thead>
@@ -201,7 +214,7 @@ console.log(data)
                         <th className='table-head border-blue-gray-100'>No</th>
                         <th className='table-head border-blue-gray-100'>Nama</th>
                         <th className='table-head border-blue-gray-100'>Komentar</th>
-                        <th className='table-head border-blue-gray-100'>Action</th>
+                        <th className='table-head border-blue-gray-100'>Balasan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -210,9 +223,9 @@ console.log(data)
                         return (
                             <tr key={key} className='border-b border-blue-gray-50 '>
                                 <td className='p-2 text-center'>{key+1}</td>
-                                <td className='p-2 '>{item.nama} </td>
-                                <td className='p-2 '>{item.content} </td>
-                                <td className='p-2 '>
+                                <td className='p-2 text-center'>{item.nama} </td>
+                                <td className='p-2 text-center'><p dangerouslySetInnerHTML={{ __html: item.content }} /></td>
+                                <td className='p-2 text-center'><p dangerouslySetInnerHTML={{ __html: item.balasan }} />
                                     {/* <div className="inline-flex text-[12px]">
                                         <button
                                         onClick={()=>goToDetail(item._id)}
