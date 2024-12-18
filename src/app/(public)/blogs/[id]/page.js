@@ -139,6 +139,7 @@ const idBlog=`${params.id}`
 console.log(dataKomenById)
     if(isLoading) return (<>Loading...</>)
     if(loadingKomen) return (<>Memuat Komentar...</>)
+    if(dataKomenById) return (<>Memuat Komentar...</>)
     
       
     return (
@@ -177,7 +178,7 @@ console.log(dataKomenById)
                     onInit={(_evt, editor) => editorRef.current = editor}
                     initialValue={komentar.content}
                     init={{
-                    height: 500,
+                    height: 150,
                     menubar: false,
                     plugins: [
                         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',

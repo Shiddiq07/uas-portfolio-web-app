@@ -100,7 +100,7 @@ export default function Blogsbyid(){
                 <h2 className="text-center text-[32px] font-bold w-full">{data.nama}</h2>
                 <div className='mt-10  ' dangerouslySetInnerHTML={{ __html: data.content }}/>
             </div>
-            <Card title="Blogs Edit Form">
+            <Card title="balas komentar">
             
             <div className="hidden">
             <Editor className="hidden"
